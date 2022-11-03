@@ -6,4 +6,10 @@ The exploration of the planet Mars is a race for the space sovereignty of most d
 
 This project is thus the subject of a classification of images of Mars. After a first introductory part, this report is subdivided in four main chapters and closed by a conclusion. The first chapter presents the framework of the Mars mission and outlines its scientific objectives. The second chapter presents the dataset on which we will work and solves some imbalance problems. The third chapter designs the architecture of the convolutional neural network to be used as well as the methods for optimizing the hyperparameters of the model and for evaluating its performance. Finally, the last chapter synthesizes and comments the obtained results.
 
-## 
+## Description of the work environment 
+
+### About the mission
+
+On August 12, 2005, the U.S. space agency NASA launched a multi-purpose spacecraft called the Mars Reconnaissance Orbiter, which aims to advance our understanding of the red planet "Mars" through meticulous observation of its environment. These observations will examine potential landing sites for future surface missions and provide a high-speed communications relay for these missions.
+
+The orbiter will be used to study the Martian surface, monitor the atmosphere, and probe the subsurface to learn more about the history and distribution of water on Mars in all its forms: frozen, liquid, or vapor. With the most powerful telescopic camera ever sent to another planet, the Mars Reconnaissance Orbiter will be able to show features of the Martian landscape at very small scales from the spacecraft's low altitude. This camera, along with five other science instruments, will produce numerous data each day during the planned 24-month science phase that will be sent back to Earth at a rate more than 10 times faster than previous Mars missions. The spacecraft will use a larger dish antenna, a faster computer, and an amplifier powered by a larger solar cell array.
