@@ -1,7 +1,7 @@
 # Mars Image Classification 
 
 
-<img src="https://github.com/OUTLAOUAIT/Deep-Hybrid-Learning-for-Brain-Tumor-Classification/blob/main/Images/types.png"/>
+<img src="https://github.com/OUTLAOUAIT/Mars-image-Classification/blob/main/Images/Cover.png"/>
 
 ## Introduction
 
