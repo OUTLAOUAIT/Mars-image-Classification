@@ -109,7 +109,7 @@ After some thought, we were able to discover that the "other" class is the sourc
 
 This reflection led us to try to remove the "other" class that does not add information to our learned classification and to consider only the remaining well annotated classes.
 
-<img src="https://github.com/OUTLAOUAIT/Mars-image-Classification/blob/main/Images/without_class0.PNG"/>
+<img src="https://github.com/OUTLAOUAIT/Mars-image-Classification/blob/main/Images/without_class0.png"/>
 
 ####  Classification report after balancing without class 0 :
 
