@@ -57,8 +57,19 @@ Our dataset consists of a collection of 10815 black and white images of size 227
 
 <img src="https://github.com/OUTLAOUAIT/Mars-image-Classification/blob/main/Images/classes.PNG"/>
 
-Gallery 
+### Gallery 
 
 <img src="https://github.com/OUTLAOUAIT/Mars-image-Classification/blob/main/Images/Gallery.PNG"/>
 
  
+## Data Preprocessing
+
+From the table of counts and figures below, we can conclude that our dataset is obviously unbalanced. There is a large presence of samples from class 0 (81.39% of the data) and class 1 (7.34% of the data) against a tiny fraction of samples for class 5 (0.68% of the data). We observe that the majority of the classes have counts that wobble around 300 samples, so we will bring all the classes down to this number by resampling.
+
+<img src="https://github.com/OUTLAOUAIT/Mars-image-Classification/blob/main/Images/Percent.PNG"/>
+
+### Oversampling
+To reach the 300 samples, classes 2, 3, 4, 5, 6 and 7 need more samples than they have, so we will oversample them.
+
+To achieve such a result, we opted for the SMOTE (Synthetic Minority Over-sampling Technique) method, which generates synthetic new samples from linear combinations of the original samples. This choice was based on its computational speed as well as its great advantage of generating new images, something that will allow our neural network, to be trained later, to better detect the characteristics of images of this class
+
