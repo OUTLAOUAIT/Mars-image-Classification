@@ -1,5 +1,8 @@
 # Mars Image Classification 
 
+
+<img src="https://github.com/OUTLAOUAIT/Deep-Hybrid-Learning-for-Brain-Tumor-Classification/blob/main/Images/types.png"/>
+
 ## Introduction
 
 The exploration of the planet Mars is a race for the space sovereignty of most developed countries. It is part of a huge geopolitical and scientific adventure. Our interest in this planet is based on the fact that there is evidence that Mars was home to life and that it is possible to go and live there one day. However, before embarking on such a journey, it is necessary to study it and learn its secrets. The Mars Reconnaissance Orbiter is a satellite that orbits the planet to take pictures of its soil and study its meteorology. The data in the form of images that we have of Mars are of considerable size, hence the importance of inferring knowledge from them. The images taken of Mars are scattered, so a classification of them could well help scientists to better understand the Martian soil in a general way and more particularly in terms of geological history, physico-chemical composition and the choice of relevant trajectories for the rovers on the Martian soil. 
