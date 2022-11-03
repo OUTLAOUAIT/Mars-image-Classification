@@ -73,3 +73,25 @@ To reach the 300 samples, classes 2, 3, 4, 5, 6 and 7 need more samples than the
 
 To achieve such a result, we opted for the SMOTE (Synthetic Minority Over-sampling Technique) method, which generates synthetic new samples from linear combinations of the original samples. This choice was based on its computational speed as well as its great advantage of generating new images, something that will allow our neural network, to be trained later, to better detect the characteristics of images of this class
 
+### Subsampling
+
+For the two classes 0 and 1, we performed clustering by the K-Means algorithm on the vector flattened raster images with the number of clusters 300 chosen in such a way to balance the dataset. After clustering, we take one representative from each group (closest to the centroid) and form our class from this new dataset. The clustering was chosen in order to keep the information homogeneous with respect to the whole dataset and not to have images with features unique to the class in question.
+
+<img src="https://github.com/OUTLAOUAIT/Mars-image-Classification/blob/main/Images/distribution.PNG"/>
+
+We observe a nice uniformity in the distribution of class counts, and in view of the methods chosen to obtain such a result, a large part of the information of the whole dataset is kept.
+
+## Empirical results
+
+This section shows the results of our simulations before and after balancing our database. The results after balancing are divided into both a simulation with consideration of the "other" class and one without. In all simulations, the initial parameters are:
+
+	- Training percentage: 70% of the data
+	- Validation percentage: 15% of the data
+	- Percentage of testing: 15% of the data
+	- Number of trials for the HyperBand algorithm: 30
+	- Number of iterations per trial: 3
+	- Number of epochs: 30
+	
+
+
+
