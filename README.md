@@ -50,4 +50,10 @@ The HiRISE camera is one of the largest and most precise ever embarked in an orb
 Our goal is therefore to develop a machine learning model to classify a large database of images taken by HiRISE annotated by NASA geologist and physicist experts for deployment on one of the orbiter components publicly available on the website www.zenodo.org and published on September 16, 2020 by scientists from NASA's Jet Propulsion Laboratory.
 
 Among the benefits of this operation is the automation of future processing to detect areas of interest on the Martian soil and the minimization of sending information of low inferential quality to Earth.
+
+## Dataset description
+Our dataset consists of a collection of 10815 black and white images of size 227x227 pixels taken by the HiRISE camera of the Mars Reconnaissance Orbiter. It is composed of 8 classes annotated by scientists from NASA's Jet Propulsion Laboratory. The table below summarizes the information of each class and gives their meanings.
+
+
+<img src="https://github.com/OUTLAOUAIT/Mars-image-Classification/blob/main/Images/classes.PNG"/>
  
