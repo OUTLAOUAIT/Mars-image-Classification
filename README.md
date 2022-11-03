@@ -1,7 +1,7 @@
 # Mars Image Classification 
 
 
-<img src="https://github.com/OUTLAOUAIT/Mars-image-Classification/blob/main/Images/Cover.png"/>
+<img src="https://github.com/OUTLAOUAIT/Mars-image-Classification/blob/main/Images/Cover.jpg"/>
 
 ## Introduction
 
