@@ -39,4 +39,12 @@ The key objectives of this mission are:
 The orbiter carries six scientific instruments to examine the planet in various parts of the electromagnetic spectrum (from ultraviolet to radio waves).
 
 Camera HiRISE : (High Resolution Imaging Science Experiment) consists of a telescope of 50 cm diameter and a focal length of 12 m. Its spatial resolution on the ground reaches 30 cm from an altitude of 300 km. The detector consists of 14 CCD sensors of 2 048 x 128 pixels, 10 of which have a red filter and the other four a blue, green and near infrared filter. It takes pictures in three color bands: blue-green, red and infrared. To facilitate the mapping of potential landing sites, the HiRISE camera can produce stereo images.
+
+### Formulation of the problem
+
+The HiRISE camera is one of the largest and most precise ever embarked in an orbital probe, it can acquire up to 28 gigabits of data in less than 6 seconds. This huge amount of images must be processed so that we can make the most of them and meet our objectives of detecting possible areas of water on Mars and defining sites and trajectories with high potential for surface missions.
+
+Our goal is therefore to develop a machine learning model to classify a large database of images taken by HiRISE annotated by NASA geologist and physicist experts for deployment on one of the orbiter components publicly available on the website www.zenodo.org and published on September 16, 2020 by scientists from NASA's Jet Propulsion Laboratory.
+
+Among the benefits of this operation is the automation of future processing to detect areas of interest on the Martian soil and the minimization of sending information of low inferential quality to Earth.
  
