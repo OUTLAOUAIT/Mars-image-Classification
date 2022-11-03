@@ -57,6 +57,8 @@ Our dataset consists of a collection of 10815 black and white images of size 227
 
 <img src="https://github.com/OUTLAOUAIT/Mars-image-Classification/blob/main/Images/classes.PNG"/>
 
+Gallery 
+
 <img src="https://github.com/OUTLAOUAIT/Mars-image-Classification/blob/main/Images/Gallery.PNG"/>
 
  
