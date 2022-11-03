@@ -13,3 +13,10 @@ This project is thus the subject of a classification of images of Mars. After a 
 On August 12, 2005, the U.S. space agency NASA launched a multi-purpose spacecraft called the Mars Reconnaissance Orbiter, which aims to advance our understanding of the red planet "Mars" through meticulous observation of its environment. These observations will examine potential landing sites for future surface missions and provide a high-speed communications relay for these missions.
 
 The orbiter will be used to study the Martian surface, monitor the atmosphere, and probe the subsurface to learn more about the history and distribution of water on Mars in all its forms: frozen, liquid, or vapor. With the most powerful telescopic camera ever sent to another planet, the Mars Reconnaissance Orbiter will be able to show features of the Martian landscape at very small scales from the spacecraft's low altitude. This camera, along with five other science instruments, will produce numerous data each day during the planned 24-month science phase that will be sent back to Earth at a rate more than 10 times faster than previous Mars missions. The spacecraft will use a larger dish antenna, a faster computer, and an amplifier powered by a larger solar cell array.
+
+### Technical description
+
+Mars Reconnaissance Orbiter is 6.5 meters high and has a 3 meters high parabolic antenna. The solar panels are made of 20 square meters of solar cells. The spacecraft weighed 2,180 kilograms at launch, and the fuel for the 20 onboard thrusters was about half that mass.
+
+In order to process huge amounts of data, the orbiter has 160 gigabits of solid-state memory and a processor with 46 million instructions per second.
+
