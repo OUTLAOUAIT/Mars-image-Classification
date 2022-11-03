@@ -20,3 +20,23 @@ Mars Reconnaissance Orbiter is 6.5 meters high and has a 3 meters high parabolic
 
 In order to process huge amounts of data, the orbiter has 160 gigabits of solid-state memory and a processor with 46 million instructions per second.
 
+### Science Objectives
+
+The science objectives of the Mars Reconnaissance Orbiter mission will serve as a critical step in NASA's Mars exploration program in terms of its water and bacterial life resources and its climatic, geological, and environmental changes; in other words, in terms of its potential to harbor life.
+
+The key objectives of this mission are:
+
+	- To understand the Martian climate and its seasonality.
+	- Characterize the Martian atmosphere and monitor its meteorology.
+	- Study complex terrain and identify water-related landforms.
+	- Search for sites with stratigraphic or compositional evidence of water or hydrothermal activity.
+	- Search the subsurface for evidence of subterranean layers, water and ice, and profile the internal structure of polar ice caps.
+	- Identify and characterize sites with the greatest potential for future surface missions.
+	- Communicate scientific information from Mars surface missions back to Earth.
+ 
+ ### Instruments on board
+
+The orbiter carries six scientific instruments to examine the planet in various parts of the electromagnetic spectrum (from ultraviolet to radio waves).
+
+Camera HiRISE : (High Resolution Imaging Science Experiment) consists of a telescope of 50 cm diameter and a focal length of 12 m. Its spatial resolution on the ground reaches 30 cm from an altitude of 300 km. The detector consists of 14 CCD sensors of 2 048 x 128 pixels, 10 of which have a red filter and the other four a blue, green and near infrared filter. It takes pictures in three color bands: blue-green, red and infrared. To facilitate the mapping of potential landing sites, the HiRISE camera can produce stereo images.
+ 
