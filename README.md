@@ -91,7 +91,40 @@ This section shows the results of our simulations before and after balancing our
 	- Number of trials for the HyperBand algorithm: 30
 	- Number of iterations per trial: 3
 	- Number of epochs: 30
-	
+
+Using the new balanced distributions of the image classes obtained by under- and oversampling, we can now and oversampling, we can now measure globally the performance of our models the performance of our models thanks to the famous accuracy score.
+
+### With the "other" class
+We notice that the distributions of the training sets are better balanced compared to the previous example.
+
+<img src="https://github.com/OUTLAOUAIT/Mars-image-Classification/blob/main/Images/with_class0.PNG"/>
+
+We note the very poor accuracy value with 33% of good classifications. The two classes 5 and 6 are totally sucked into the other classes. No f1-score value admits more than 50% of good classifications.
+
+The above results make us wonder about the problem that could occur even after a good balancing of the data that takes into account the statistical information of the data set.
+
+### Without the "other" class
+
+After some thought, we were able to discover that the "other" class is the source of our problem. It is a class that, by definition, includes images that do not fit into any of the above categories. It is therefore a collection of heterogeneous images for which learning features is most difficult, because it is quite likely that no distinctive feature exists.
+
+This reflection led us to try to remove the "other" class that does not add information to our learned classification and to consider only the remaining well annotated classes.
+
+<img src="https://github.com/OUTLAOUAIT/Mars-image-Classification/blob/main/Images/without_class0.PNG"/>
+
+####  Classification report after balancing without class 0 :
+
+<img src="https://github.com/OUTLAOUAIT/Mars-image-Classification/blob/main/Images/Classification_report.PNG"/>
+
+We find 86% of accuracy with f1-scores per class higher than 70%. We can then affirm that our classification, in spite of its rather heavy structure in convolutional layers necessary for a good extraction of the characteristics, is of good quality considering the scores and having the "other" class omitted.
+
+### Synthesis
+As a synthesis of the results obtained both on the architectural level of the neural network and on the performance level, we can conclude the following:
+
+	- The "other" class is a heterogeneous class, something that affected the ability of the network to find features of its elements.
+	- Despite the balancing of the data, the "other" class made the complexity of the model very high and the accuracy poor.
+	- We notice that as long as there are homogeneous class data, the convolution layers increase to detect the finest features of each class.
+	- The last optimal architecture responds to an empirical datum in the literature on the correct definition of a model stating the smooth and non-sudden decay of the number of parameters at the layers of the multi-layer perceptron.
+
 
 
 
