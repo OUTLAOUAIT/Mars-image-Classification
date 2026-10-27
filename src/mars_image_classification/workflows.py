@@ -11,7 +11,7 @@ import numpy as np
 
 from .data import class_mapping, load_manifest, preprocess_image, source_to_index, split_samples
 from .metrics import classification_metrics
-from .modeling import build_model, load_checkpoint, save_metadata, _tensorflow
+from .modeling import _tensorflow, build_model, load_checkpoint, save_metadata
 
 
 def seed_everything(seed: int):
