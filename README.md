@@ -1,5 +1,9 @@
 # Mars Image Classification
 
+
+<img src="https://github.com/OUTLAOUAIT/Mars-image-Classification/blob/main/Images/Cover.jpg"/>
+
+
 This project classifies grayscale HiRISE orbital images from the Mars Reconnaissance Orbiter. It uses an EfficientNetB0 model for seven annotated landmark classes: crater, dark dune, streak, bright dune, impact, edge, and spider. The dataset also contains an `other` class, which is excluded by default.
 
 ## Dataset
