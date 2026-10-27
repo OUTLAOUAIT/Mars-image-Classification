@@ -1,0 +1,14 @@
+{
+  "data_dir": "data/hirise-map-proj-v3_2",
+  "image_size": 227,
+  "batch_size": 32,
+  "epochs": 30,
+  "learning_rate": 0.001,
+  "seed": 42,
+  "device": "auto",
+  "model": "efficientnet_b0",
+  "weights": "imagenet",
+  "dropout": 0.8,
+  "include_other": false,
+  "output_dir": "outputs/default"
+}

@@ -1,130 +1,144 @@
-# Mars Image Classification 
+# Mars Image Classification
 
+This repository explores multiclass classification of grayscale HiRISE orbital images from the Mars Reconnaissance Orbiter. The historical notebook trains an EfficientNetB0 classifier for seven annotated landmark classes: crater, dark dune, streak, bright dune, impact, edge, and spider. The archive also contains an `other` class; the default experiment excludes it, matching the notebook's active label mapping.
 
-<img src="https://github.com/OUTLAOUAIT/Mars-image-Classification/blob/main/Images/Cover.jpg"/>
+## Dataset
 
-## Introduction
+Use the [HiRISE v3.2 labeled dataset on Zenodo](https://doi.org/10.5281/zenodo.4002935), published by Gary Doran, Emily Dunkel, Steven Lu, and Kiri Wagstaff at NASA/JPL. Download `hirise-map-proj-v3_2.zip` (about 911 MB) and extract it under `data/`. The archive contains `map-proj-v3_2/` images and `labels-map-proj-v3_2_train_val_test.txt`, whose rows contain `filename class_id split`. The dataset has eight source labels (IDs 0–7); the package maps IDs 1–7 to stable zero-based model labels by default.
 
-The exploration of the planet Mars is a race for the space sovereignty of most developed countries. It is part of a huge geopolitical and scientific adventure. Our interest in this planet is based on the fact that there is evidence that Mars was home to life and that it is possible to go and live there one day. However, before embarking on such a journey, it is necessary to study it and learn its secrets. The Mars Reconnaissance Orbiter is a satellite that orbits the planet to take pictures of its soil and study its meteorology. The data in the form of images that we have of Mars are of considerable size, hence the importance of inferring knowledge from them. The images taken of Mars are scattered, so a classification of them could well help scientists to better understand the Martian soil in a general way and more particularly in terms of geological history, physico-chemical composition and the choice of relevant trajectories for the rovers on the Martian soil. 
+The original notebook instead randomly split the label list and applied SMOTE separately to each split. That can place related images in different splits and makes the validation/test scores describe synthetic data. The package uses the dataset's supplied split manifest and does no resampling for validation or test. Training uses inverse-frequency class weights. This is a substantive methodology correction; its metrics are not directly comparable to the notebook's historical figures.
 
-This project is thus the subject of a classification of images of Mars. After a first introductory part, this report is subdivided in four main chapters and closed by a conclusion. The first chapter presents the framework of the Mars mission and outlines its scientific objectives. The second chapter presents the dataset on which we will work and solves some imbalance problems. The third chapter designs the architecture of the convolutional neural network to be used as well as the methods for optimizing the hyperparameters of the model and for evaluating its performance. Finally, the last chapter synthesizes and comments the obtained results.
+### Classes and original distribution
 
-## Description of the work environment 
+The counts below are from the dataset summary in the original project README. They sum to 10,815 source images and show why the historical work focused on balancing the classes.
 
-### About the mission
+| ID | Class | Count | Description |
+| ---: | --- | ---: | --- |
+| 0 | Other | 8,802 | Catch-all for images outside the defined classes |
+| 1 | Crater | 794 | Circular or elliptical depression |
+| 2 | Dark dune | 166 | Defrosted sand dune |
+| 3 | Slope streak | 267 | Dark dust feature on a slope |
+| 4 | Bright dune | 250 | Frost-covered or non-defrosted sand dune |
+| 5 | Impact ejecta | 74 | Material ejected by an impact or eruption |
+| 6 | Swiss cheese / edge | 298 | The notebook calls this output class `edge`; the report image labels it Swiss cheese |
+| 7 | Spider | 164 | Polar feature with a central pit and radial troughs |
 
-On August 12, 2005, the U.S. space agency NASA launched a multi-purpose spacecraft called the Mars Reconnaissance Orbiter, which aims to advance our understanding of the red planet "Mars" through meticulous observation of its environment. These observations will examine potential landing sites for future surface missions and provide a high-speed communications relay for these missions.
+![Original class definitions and counts](Images/classes.PNG)
 
-The orbiter will be used to study the Martian surface, monitor the atmosphere, and probe the subsurface to learn more about the history and distribution of water on Mars in all its forms: frozen, liquid, or vapor. With the most powerful telescopic camera ever sent to another planet, the Mars Reconnaissance Orbiter will be able to show features of the Martian landscape at very small scales from the spacecraft's low altitude. This camera, along with five other science instruments, will produce numerous data each day during the planned 24-month science phase that will be sent back to Earth at a rate more than 10 times faster than previous Mars missions. The spacecraft will use a larger dish antenna, a faster computer, and an amplifier powered by a larger solar cell array.
+The original report's class-imbalance chart and its post-balancing class distribution are preserved below. These are notebook-era visualizations, not outputs from the refactored CLI.
 
-### Technical description
+![Original class imbalance chart](Images/Percent.PNG)
 
-Mars Reconnaissance Orbiter is 6.5 meters high and has a 3 meters high parabolic antenna. The solar panels are made of 20 square meters of solar cells. The spacecraft weighed 2,180 kilograms at launch, and the fuel for the 20 onboard thrusters was about half that mass.
+![Original balanced class distribution](Images/distribution.PNG)
 
-In order to process huge amounts of data, the orbiter has 160 gigabits of solid-state memory and a processor with 46 million instructions per second.
+The report also includes example images from all eight source classes:
 
-### Science Objectives
+![HiRISE class image gallery](Images/Gallery.PNG)
 
-The science objectives of the Mars Reconnaissance Orbiter mission will serve as a critical step in NASA's Mars exploration program in terms of its water and bacterial life resources and its climatic, geological, and environmental changes; in other words, in terms of its potential to harbor life.
+## Install
 
-The key objectives of this mission are:
+Python 3.10–3.12 is supported. Install the package and development tools in a virtual environment:
 
-	- To understand the Martian climate and its seasonality.
-	- Characterize the Martian atmosphere and monitor its meteorology.
-	- Study complex terrain and identify water-related landforms.
-	- Search for sites with stratigraphic or compositional evidence of water or hydrothermal activity.
-	- Search the subsurface for evidence of subterranean layers, water and ice, and profile the internal structure of polar ice caps.
-	- Identify and characterize sites with the greatest potential for future surface missions.
-	- Communicate scientific information from Mars surface missions back to Earth.
- 
- ### Instruments on board
+```bash
+python -m venv .venv
+# Windows: .venv\Scripts\activate
+# macOS/Linux: source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -e ".[train,dev]"
+```
 
-The orbiter carries six scientific instruments to examine the planet in various parts of the electromagnetic spectrum (from ultraviolet to radio waves).
+TensorFlow is an optional training/inference dependency. For GPU use, install the TensorFlow build and drivers supported by your operating system and accelerator; on Windows, current TensorFlow GPU workflows generally use WSL2. The default configuration requests ImageNet EfficientNetB0 weights, which are downloaded by Keras on the first training run. Set `weights` to `null` in a copied config for offline initialization. Unit tests do not import TensorFlow or download weights.
 
-Camera HiRISE : (High Resolution Imaging Science Experiment) consists of a telescope of 50 cm diameter and a focal length of 12 m. Its spatial resolution on the ground reaches 30 cm from an altitude of 300 km. The detector consists of 14 CCD sensors of 2 048 x 128 pixels, 10 of which have a red filter and the other four a blue, green and near infrared filter. It takes pictures in three color bands: blue-green, red and infrared. To facilitate the mapping of potential landing sites, the HiRISE camera can produce stereo images.
+## Workflows
 
-### Formulation of the problem
+Check that the archive layout and all manifest images are present:
 
-The HiRISE camera is one of the largest and most precise ever embarked in an orbital probe, it can acquire up to 28 gigabits of data in less than 6 seconds. This huge amount of images must be processed so that we can make the most of them and meet our objectives of detecting possible areas of water on Mars and defining sites and trajectories with high potential for surface missions.
+```bash
+mars-classify prepare --data-dir data/hirise-map-proj-v3_2
+```
 
-Our goal is therefore to develop a machine learning model to classify a large database of images taken by HiRISE annotated by NASA geologist and physicist experts for deployment on one of the orbiter components publicly available on the website www.zenodo.org and published on September 16, 2020 by scientists from NASA's Jet Propulsion Laboratory.
+Train using `configs/default.json`:
 
-Among the benefits of this operation is the automation of future processing to detect areas of interest on the Martian soil and the minimization of sending information of low inferential quality to Earth.
+```bash
+mars-classify train --config configs/default.json
+```
 
-## Dataset description
-Our dataset consists of a collection of 10815 black and white images of size 227x227 pixels taken by the HiRISE camera of the Mars Reconnaissance Orbiter. It is composed of 8 classes annotated by scientists from NASA's Jet Propulsion Laboratory. The table below summarizes the information of each class and gives their meanings.
+Override settings directly on the command line, for example:
 
+```bash
+mars-classify train --config configs/default.json --data-dir data/hirise-map-proj-v3_2 --epochs 2 --batch-size 8 --seed 7 --device cpu --output-dir outputs/cpu-smoke --weights none
+```
 
-<img src="https://github.com/OUTLAOUAIT/Mars-image-Classification/blob/main/Images/classes.PNG"/>
+`--device` accepts `auto`, `cpu`, or `gpu`. `--weights none` selects random initialization; otherwise use a Keras EfficientNet weight value such as `imagenet`. Experiment settings include image size, batch size, epochs, learning rate, seed, model and output directory in JSON. The maintained architecture is EfficientNetB0 with the notebook's two dropout layers (0.8), global average pooling, and seven-class softmax. Inputs are resized to 227×227, converted to grayscale, replicated to three channels, and kept on the 0–255 scale expected by Keras EfficientNet preprocessing.
 
-### Gallery 
+Evaluate a saved checkpoint on an official split (test is the default):
 
-<img src="https://github.com/OUTLAOUAIT/Mars-image-Classification/blob/main/Images/Gallery.PNG"/>
+```bash
+mars-classify evaluate --checkpoint outputs/default/best.keras --data-dir data/hirise-map-proj-v3_2 --split test
+```
 
- 
-## Data Preprocessing
+Predict one image or every supported image in a directory:
 
-From the table of counts and figures below, we can conclude that our dataset is obviously unbalanced. There is a large presence of samples from class 0 (81.39% of the data) and class 1 (7.34% of the data) against a tiny fraction of samples for class 5 (0.68% of the data). We observe that the majority of the classes have counts that wobble around 300 samples, so we will bring all the classes down to this number by resampling.
+```bash
+mars-classify predict --checkpoint outputs/default/best.keras --input path/to/image.png
+mars-classify predict --checkpoint outputs/default/best.keras --input path/to/images/
+```
 
-<img src="https://github.com/OUTLAOUAIT/Mars-image-Classification/blob/main/Images/Percent.PNG"/>
+Each run writes the resolved configuration, class mapping and preprocessing metadata, epoch history, validation metrics, and best `best.keras` model to its output directory. Checkpoint selection uses maximum validation accuracy, as in the notebook. Evaluation reports accuracy, macro F1, support, and the confusion matrix. The `prepare` command validates; it does not download or extract the dataset.
 
-### Oversampling
-To reach the 300 samples, classes 2, 3, 4, 5, 6 and 7 need more samples than they have, so we will oversample them.
+## Code and notebooks
 
-To achieve such a result, we opted for the SMOTE (Synthetic Minority Over-sampling Technique) method, which generates synthetic new samples from linear combinations of the original samples. This choice was based on its computational speed as well as its great advantage of generating new images, something that will allow our neural network, to be trained later, to better detect the characteristics of images of this class
+Reusable archive loading, preprocessing, model creation, training, evaluation, prediction, and CLI code live in `src/mars_image_classification/`. Run `mars-classify --help` for command options. `notebooks/Mars_Image_Classification.ipynb` is the preserved historical notebook and its existing plots are historical analysis, not generated by the package. The original README's figures and discussion are retained in the tracked `Images/` assets.
 
-### Subsampling
+## Historical results and limitations
 
-For the two classes 0 and 1, we performed clustering by the K-Means algorithm on the vector flattened raster images with the number of clusters 300 chosen in such a way to balance the dataset. After clustering, we take one representative from each group (closest to the centroid) and form our class from this new dataset. The clustering was chosen in order to keep the information homogeneous with respect to the whole dataset and not to have images with features unique to the class in question.
+The original README reports 86% accuracy for a balanced seven-class experiment without `other` and 33% for an experiment including it. These are claims from the original project report; this refactor has not rerun them. Because the notebook resampled validation and test separately, those numbers should not be treated as scores on the official untouched splits. No new performance result is claimed here.
 
-<img src="https://github.com/OUTLAOUAIT/Mars-image-Classification/blob/main/Images/distribution.PNG"/>
+The execution screenshots from the report are retained here for reference. The first is the eight-class report (including `other`); the second is the seven-class report (excluding `other`). The report images use numeric labels: including `other`, IDs 0-7 follow the source IDs above; excluding it, IDs 0-6 correspond to crater, dark dune, slope streak, bright dune, impact ejecta, Swiss cheese/edge, and spider, respectively.
 
-We observe a nice uniformity in the distribution of class counts, and in view of the methods chosen to obtain such a result, a large part of the information of the whole dataset is kept.
+![Historical classification report including other: 33% accuracy](Images/with_class0.PNG)
 
-## Empirical results
+| Class (including other) | Precision | Recall | F1 | Support |
+| --- | ---: | ---: | ---: | ---: |
+| Other | 0.31 | 0.39 | 0.35 | 44 |
+| Crater | 0.66 | 0.45 | 0.53 | 56 |
+| Dark dune | 0.32 | 0.23 | 0.27 | 43 |
+| Slope streak | 0.21 | 0.77 | 0.33 | 44 |
+| Bright dune | 0.33 | 0.44 | 0.38 | 34 |
+| Impact ejecta | 0.00 | 0.00 | 0.00 | 39 |
+| Swiss cheese / edge | 0.00 | 0.00 | 0.00 | 46 |
+| Spider | 0.73 | 0.35 | 0.48 | 54 |
+| **Accuracy** |  |  | **0.33** | **360** |
+| **Macro average** | **0.32** | **0.33** | **0.29** | **360** |
+| **Weighted average** | **0.35** | **0.33** | **0.30** | **360** |
 
-This section shows the results of our simulations before and after balancing our database. The results after balancing are divided into both a simulation with consideration of the "other" class and one without. In all simulations, the initial parameters are:
+![Historical classification report without other: 86% accuracy](Images/Classification_report.PNG)
 
-	- Training percentage: 70% of the data
-	- Validation percentage: 15% of the data
-	- Percentage of testing: 15% of the data
-	- Number of trials for the HyperBand algorithm: 30
-	- Number of iterations per trial: 3
-	- Number of epochs: 30
+| Class (without other) | Precision | Recall | F1 | Support |
+| --- | ---: | ---: | ---: | ---: |
+| Crater | 0.81 | 0.98 | 0.89 | 233 |
+| Dark dune | 1.00 | 0.63 | 0.77 | 233 |
+| Slope streak | 0.81 | 0.78 | 0.79 | 233 |
+| Bright dune | 0.96 | 0.96 | 0.96 | 233 |
+| Impact ejecta | 0.81 | 0.81 | 0.81 | 233 |
+| Swiss cheese / edge | 0.76 | 0.99 | 0.86 | 233 |
+| Spider | 0.95 | 0.85 | 0.90 | 233 |
+| **Accuracy** |  |  | **0.86** | **1,631** |
+| **Macro average** | **0.87** | **0.86** | **0.85** | **1,631** |
+| **Weighted average** | **0.87** | **0.86** | **0.85** | **1,631** |
 
-Using the new balanced distributions of the image classes obtained by under- and oversampling, we can now and oversampling, we can now measure globally the performance of our models the performance of our models thanks to the famous accuracy score.
+The corresponding balanced split-distribution plot from the report is also retained:
 
-### With the "other" class
-We notice that the distributions of the training sets are better balanced compared to the previous example.
+![Historical class distributions across training, validation, and test](Images/without_class0.png)
 
-<img src="https://github.com/OUTLAOUAIT/Mars-image-Classification/blob/main/Images/with_class0.PNG"/>
+Training is not deterministic across all TensorFlow versions, devices, and kernels. The package seeds Python, NumPy, and TensorFlow, but accelerator operations and data input can still introduce variation. The notebook also defines learning-rate variables that do not control the actual optimizer; the package uses the Adam learning rate documented in its config. Training can be computationally expensive, and pretrained weights require an initial download unless disabled.
 
-We note the very poor accuracy value with 33% of good classifications. The two classes 5 and 6 are totally sucked into the other classes. No f1-score value admits more than 50% of good classifications.
+## Development
 
-The above results make us wonder about the problem that could occur even after a good balancing of the data that takes into account the statistical information of the data set.
+```bash
+python -m pip install -e ".[dev]"
+python -m unittest discover -s tests
+ruff check src tests
+```
 
-### Without the "other" class
-
-After some thought, we were able to discover that the "other" class is the source of our problem. It is a class that, by definition, includes images that do not fit into any of the above categories. It is therefore a collection of heterogeneous images for which learning features is most difficult, because it is quite likely that no distinctive feature exists.
-
-This reflection led us to try to remove the "other" class that does not add information to our learned classification and to consider only the remaining well annotated classes.
-
-<img src="https://github.com/OUTLAOUAIT/Mars-image-Classification/blob/main/Images/without_class0.png"/>
-
-####  Classification report after balancing without class 0 :
-
-<img src="https://github.com/OUTLAOUAIT/Mars-image-Classification/blob/main/Images/Classification_report.PNG"/>
-
-We find 86% of accuracy with f1-scores per class higher than 70%. We can then affirm that our classification, in spite of its rather heavy structure in convolutional layers necessary for a good extraction of the characteristics, is of good quality considering the scores and having the "other" class omitted.
-
-### Synthesis
-As a synthesis of the results obtained both on the architectural level of the neural network and on the performance level, we can conclude the following:
-
-	- The "other" class is a heterogeneous class, something that affected the ability of the network to find features of its elements.
-	- Despite the balancing of the data, the "other" class made the complexity of the model very high and the accuracy poor.
-	- We notice that as long as there are homogeneous class data, the convolution layers increase to detect the finest features of each class.
-	- The last optimal architecture responds to an empirical datum in the literature on the correct definition of a model stating the smooth and non-sudden decay of the number of parameters at the layers of the multi-layer perceptron.
-
-
-
-
+Dataset and run outputs are ignored by Git. No license is specified by this repository; consult the dataset record for data terms and retain its attribution when reusing the archive.
