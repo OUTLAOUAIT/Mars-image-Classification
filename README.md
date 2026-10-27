@@ -1,12 +1,12 @@
 # Mars Image Classification
 
-This repository explores multiclass classification of grayscale HiRISE orbital images from the Mars Reconnaissance Orbiter. The historical notebook trains an EfficientNetB0 classifier for seven annotated landmark classes: crater, dark dune, streak, bright dune, impact, edge, and spider. The archive also contains an `other` class; the default experiment excludes it, matching the notebook's active label mapping.
+This project classifies grayscale HiRISE orbital images from the Mars Reconnaissance Orbiter. It uses an EfficientNetB0 model for seven annotated landmark classes: crater, dark dune, streak, bright dune, impact, edge, and spider. The dataset also contains an `other` class, which is excluded by default.
 
 ## Dataset
 
 Use the [HiRISE v3.2 labeled dataset on Zenodo](https://doi.org/10.5281/zenodo.4002935), published by Gary Doran, Emily Dunkel, Steven Lu, and Kiri Wagstaff at NASA/JPL. Download `hirise-map-proj-v3_2.zip` (about 911 MB) and extract it under `data/`. The archive contains `map-proj-v3_2/` images and `labels-map-proj-v3_2_train_val_test.txt`, whose rows contain `filename class_id split`. The dataset has eight source labels (IDs 0–7); the package maps IDs 1–7 to stable zero-based model labels by default.
 
-The refactored workflow follows the dataset's supplied split manifest and does no resampling for validation or test. Training uses inverse-frequency class weights. This differs from the earlier experimental procedure, which randomly split the label list and applied SMOTE separately to each split. That approach could place related images in different splits and made the validation/test scores describe synthetic data, so the resulting metrics are not directly comparable to those shown below.
+The training workflow follows the dataset's supplied split manifest and does no resampling for validation or test. Training uses inverse-frequency class weights. The results shown below were obtained using a random split and SMOTE applied separately to each split. This can place related images in different splits and makes validation/test scores describe synthetic data, so those metrics are not directly comparable to results from the documented workflow.
 
 ### Classes and dataset distribution
 
@@ -25,7 +25,7 @@ The dataset contains 10,815 source images. Their class counts show a strong imba
 
 ![Class definitions and counts](Images/classes.PNG)
 
-The charts below show the raw class imbalance and the class distribution after balancing. They are historical experiment visualizations, not outputs from the refactored CLI.
+The charts below show the raw class imbalance and class distribution after balancing. They illustrate the class balance used for the reported experiments. The documented commands save each run's outputs under `outputs/`.
 
 ![Class imbalance chart](Images/Percent.PNG)
 
@@ -84,19 +84,19 @@ mars-classify predict --checkpoint outputs/default/best.keras --input path/to/im
 mars-classify predict --checkpoint outputs/default/best.keras --input path/to/images/
 ```
 
-Each run writes the resolved configuration, class mapping and preprocessing metadata, epoch history, validation metrics, and best `best.keras` model to its output directory. Checkpoint selection uses maximum validation accuracy, as in the notebook. Evaluation reports accuracy, macro F1, support, and the confusion matrix. The `prepare` command validates; it does not download or extract the dataset.
+Each run writes the resolved configuration, class mapping and preprocessing metadata, epoch history, validation metrics, and best `best.keras` model to its output directory. Checkpoint selection uses maximum validation accuracy. Evaluation reports accuracy, macro F1, support, and the confusion matrix. The `prepare` command validates; it does not download or extract the dataset.
 
 ## Code and notebooks
 
-Reusable archive loading, preprocessing, model creation, training, evaluation, prediction, and CLI code live in `src/mars_image_classification/`. Run `mars-classify --help` for command options. `notebooks/Mars_Image_Classification.ipynb` contains exploratory analysis and plots; the package does not generate those figures.
+Reusable archive loading, preprocessing, model creation, training, evaluation, prediction, and CLI code live in `src/mars_image_classification/`. Run `mars-classify --help` for command options. `notebooks/Mars_Image_Classification.ipynb` contains exploratory analysis and plots; the package workflows run independently of Jupyter.
 
-## Historical results and limitations
+## Results and limitations
 
-The recorded experiments reached 86% accuracy on the balanced seven-class task without `other` and 33% on the task including it. These results have not been rerun in this refactor. Because validation and test were resampled separately, the scores are not measurements on the official untouched splits. No new performance result is claimed here.
+The reported experiments reached 86% accuracy on the balanced seven-class task without `other` and 33% on the task including it. These scores have not been reproduced with the documented commands. Validation and test were resampled separately, so the scores are not measurements on the official untouched splits. No performance result from the documented workflow is available yet.
 
 The evaluation results below show the eight-class task (including `other`) and the seven-class task (excluding `other`). The screenshots use numeric labels: including `other`, IDs 0-7 follow the source IDs above; excluding it, IDs 0-6 correspond to crater, dark dune, slope streak, bright dune, impact ejecta, Swiss cheese/edge, and spider, respectively.
 
-![Historical classification report including other: 33% accuracy](Images/with_class0.PNG)
+![Classification report including other: 33% accuracy](Images/with_class0.PNG)
 
 | Class (including other) | Precision | Recall | F1 | Support |
 | --- | ---: | ---: | ---: | ---: |
@@ -112,7 +112,7 @@ The evaluation results below show the eight-class task (including `other`) and t
 | **Macro average** | **0.32** | **0.33** | **0.29** | **360** |
 | **Weighted average** | **0.35** | **0.33** | **0.30** | **360** |
 
-![Historical classification report without other: 86% accuracy](Images/Classification_report.PNG)
+![Classification report without other: 86% accuracy](Images/Classification_report.PNG)
 
 | Class (without other) | Precision | Recall | F1 | Support |
 | --- | ---: | ---: | ---: | ---: |
@@ -129,7 +129,7 @@ The evaluation results below show the eight-class task (including `other`) and t
 
 The class distributions across the training, validation, and test sets are shown here:
 
-![Historical class distributions across training, validation, and test](Images/without_class0.png)
+![Class distributions across training, validation, and test](Images/without_class0.png)
 
 Training is not deterministic across all TensorFlow versions, devices, and kernels. The package seeds Python, NumPy, and TensorFlow, but accelerator operations and data input can still introduce variation. The notebook also defines learning-rate variables that do not control the actual optimizer; the package uses the Adam learning rate documented in its config. Training can be computationally expensive, and pretrained weights require an initial download unless disabled.
 
